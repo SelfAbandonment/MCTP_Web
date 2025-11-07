@@ -2,13 +2,13 @@ from django.views.decorators.http import require_GET, require_POST
 from django.contrib.auth import authenticate, login
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
-from django.http import JsonResponse, HttpRequest
+from django.http import HttpRequest
 from django.conf import settings
 from common.responses import json_success, json_error
 
 @require_GET
 def ping(request: HttpRequest):  # 健康检测端点
-    return json_success({"pong": True})
+    return json_success({"pong": True, "method": request.method, "path": request.path})
 
 
 def _attempt_keys(username, ip):  # 生成用户与 IP 级别的限制键
@@ -41,10 +41,10 @@ def login_api(request: HttpRequest):  # 登录接口（支持用户名或 QQ）�
     cache.delete(user_key)
     # 保留 IP 统计用于行为分析（可选：减少其计数）
     login(request, user)
-    return json_success({"username": user.username, "id": user.id})
+    return json_success({"username": user.get_username(), "id": user.pk})
 
 @require_GET
 @cache_page(60)  # 缓存 60 秒示例端点，用于演示视图缓存
 def cached_time(request: HttpRequest):
     import time
-    return json_success({"ts": time.time()})
+    return json_success({"ts": time.time(), "method": request.method, "path": request.path})

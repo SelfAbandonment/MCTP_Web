@@ -8,10 +8,11 @@ class ComplexityPasswordValidator:
         self.min_lower = min_lower
         self.min_digits = min_digits
         self.min_symbols = min_symbols
-        self.symbol_pattern = re.compile(r"[!@#$%^&*()_+\-={}[\\]|:;\"'<>,.?/]" )
+        self.symbol_pattern = re.compile(r"[!@#$%^&*()_+\-={}[\\]|:;\"'<>,.?/]")
 
     def validate(self, password, user=None):
         """校验密码是否满足复杂度要求."""
+        _ = user  # 参数保留以兼容 Django 密码校验器接口
         upper = sum(1 for c in password if c.isupper())
         lower = sum(1 for c in password if c.islower())
         digits = sum(1 for c in password if c.isdigit())

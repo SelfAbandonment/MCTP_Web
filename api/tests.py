@@ -26,12 +26,16 @@ class SecurityHeaderTests(TestCase):
 
 class PasswordComplexityTests(TestCase):
     def test_password_complexity_validator(self):
-        user = User.objects.create_user(username='u1', password='Abcdef1!')
+        user = User(username='u1')
+        user.set_password('Abcdef1!')
+        user.save()
         self.assertTrue(user.check_password('Abcdef1!'))
 
 class LoginBackendTests(TestCase):
     def setUp(self):
-        self.qq_user = User.objects.create_user(username='userA', password='Passw0rd!', qq='123456')
+        self.qq_user = User(username='userA', qq='123456')
+        self.qq_user.set_password('Passw0rd!')
+        self.qq_user.save()
         self.client = Client()
 
     def test_login_by_username(self):
@@ -56,7 +60,8 @@ class LoginBackendTests(TestCase):
         cache.clear()
 
 class ImageUploadValidationTests(TestCase):
-    def _generate_image(self, fmt='PNG', size=(64,64)):
+    @staticmethod
+    def _generate_image(fmt='PNG', size=(64,64)):
         bio = BytesIO()
         img = Image.new('RGB', size, color=(255,0,0))
         img.save(bio, format=fmt)

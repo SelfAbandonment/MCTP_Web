@@ -1,6 +1,5 @@
 /.idea/
 /.venv/
 /players/migrations/0001_initial.py
-/logs/app.log
-/logs/error.log
+/logs/
 /db.sqlite3
